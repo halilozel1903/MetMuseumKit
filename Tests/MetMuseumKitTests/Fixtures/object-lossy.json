@@ -1,0 +1,25 @@
+{
+  "objectID": "5432",
+  "isHighlight": null,
+  "accessionNumber": "17.190.2",
+  "accessionYear": 1917,
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/md/original/DP123.jpg",
+  "primaryImageSmall": null,
+  "additionalImages": null,
+  "constituents": null,
+  "department": "Medieval Art",
+  "objectName": "Plaque",
+  "title": "",
+  "culture": "Byzantine",
+  "objectDate": "",
+  "objectBeginDate": -300,
+  "objectEndDate": -250,
+  "medium": "Ivory",
+  "measurements": [
+    { "elementName": "Overall", "elementDescription": null, "elementMeasurements": null }
+  ],
+  "tags": [ { "term": "Saints", "AAT_URL": null, "Wikidata_URL": null }, 42 ],
+  "metadataDate": "2024-01-02T03:04:05Z",
+  "GalleryNumber": 305
+}
