@@ -178,7 +178,7 @@ struct ClientTests {
         let objects = try await stub.client.searchObjects(.highlights(departmentID: 11), limit: 4)
 
         #expect(objects.map(\.id) == [2, 3, 6, 8])
-        #expect(objects.allSatisfy(\.hasPublicDomainImage))
+        #expect(objects.allSatisfy { $0.hasPublicDomainImage })
     }
 
     @Test func searchObjectsWithoutFilters() async throws {
