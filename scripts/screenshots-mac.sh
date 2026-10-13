@@ -25,6 +25,8 @@ mkdir -p "$OUT"
 MIN_BYTES=150000  # a window without artwork compresses to far less
 MIN_WIDTH=1200    # pixels; the window is 1440 points wide
 
+xcrun swiftc -O scripts/window-id.swift -o "$TMP/window-id"
+
 xcodebuild build \
   -project "$PROJECT" \
   -scheme "$SCHEME" \
@@ -43,11 +45,15 @@ fi
 # Rejects missing, small or narrow PNGs, and a capture identical to the previous scene.
 valid_capture() {
   local file="$1" previous="$2" width
-  [ -s "$file" ] || return 1
-  [ "$(wc -c < "$file" | tr -d ' ')" -gt "$MIN_BYTES" ] || return 1
+  local bytes
+  if [ ! -s "$file" ]; then echo "  rejected: no file"; return 1; fi
+  bytes="$(wc -c < "$file" | tr -d ' ')"
   width="$(sips -g pixelWidth "$file" 2>/dev/null | awk '/pixelWidth/ { print $2 }')"
-  [ -n "$width" ] && [ "$width" -ge "$MIN_WIDTH" ] || return 1
+  echo "  capture: ${width:-?} pixels wide, $bytes bytes"
+  [ "$bytes" -gt "$MIN_BYTES" ] || { echo "  rejected: too small"; return 1; }
+  [ -n "$width" ] && [ "$width" -ge "$MIN_WIDTH" ] || { echo "  rejected: too narrow"; return 1; }
   if [ -n "$previous" ] && cmp -s "$file" "$previous"; then
+    echo "  rejected: same as the previous scene"
     return 1
   fi
   return 0
@@ -99,9 +105,10 @@ capture_window() {
   if wait_for_ready "$pid" "$marker" 150; then
     # Let images fade in.
     sleep 3
-    id="$(swift scripts/window-id.swift "$pid" 2>/dev/null || true)"
+    id="$("$TMP/window-id" "$pid" || true)"
     if [ -n "$id" ]; then
-      screencapture -x -o -l "$id" "$file" || true
+      echo "  window $id"
+      screencapture -x -o -l "$id" "$file" || echo "  screencapture exited with $?"
     else
       echo "No window found for $scene"
     fi

@@ -113,12 +113,12 @@ public struct ArtworkCard: View {
         VStack(alignment: .leading, spacing: 2) {
             Text(object.displayTitle)
                 .font(.headline)
-                .lineLimit(2)
+                .lineLimit(3)
             if let artist = object.displayArtist {
                 Text(artist)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
-                    .lineLimit(1)
+                    .lineLimit(2)
             }
             if let date = object.displayDate {
                 Text(date)
