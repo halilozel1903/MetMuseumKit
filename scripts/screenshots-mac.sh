@@ -12,7 +12,9 @@
 #    scripts/window-id.swift (CGWindowListCopyWindowInfo, filtered by the app's process id).
 # 2. Fallback: `-render-screenshot <file>` makes the app draw its window into a PNG itself
 #    (NSView.cacheDisplay at 2x) once the scene is ready, and quit. It needs no Screen Recording
-#    permission. It shows the same live scene; it only runs when 1 fails.
+#    permission. It shows the same live scene; it only runs when 1 fails. It cannot draw the
+#    Liquid Glass sidebar of macOS 26 (cacheDisplay leaves it a blank white panel) and leaves out
+#    the title bar, so 1 is what the README should show.
 set -euo pipefail
 
 SCHEME="$1"; shift
@@ -23,7 +25,9 @@ trap 'rm -rf "$TMP"' EXIT
 mkdir -p "$OUT"
 
 MIN_BYTES=150000  # a window without artwork compresses to far less
-MIN_WIDTH=1200    # pixels; the window is 1440 points wide
+# pixels. The window is 1440 points wide, or the width of the screen when that is smaller: the
+# macos-26 runner has a 1024 x 768 display at 1x, so its captures are 1024 pixels wide.
+MIN_WIDTH=960
 
 xcrun swiftc -O scripts/window-id.swift -o "$TMP/window-id"
 
